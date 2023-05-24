@@ -4,12 +4,11 @@ POC of generating query builder code from protobuf schema
 
 ## Before
 ```java
-   Bson textSearch = Aggregates.search(
-       SearchOperator.text(
-           Arrays.asList(SearchPath.fieldPath("title"), SearchPath.fieldPath("foo")),
-    List.of("Future"))
-    .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3)));
-
+    Bson textSearch = Aggregates.search(
+        SearchOperator.text(
+                Arrays.asList(SearchPath.fieldPath("title"), SearchPath.fieldPath("foo")),
+                List.of("Future"))
+            .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3)));
 ```
 
 ```javascript
@@ -21,10 +20,10 @@ POC of generating query builder code from protobuf schema
 ```java
     Search search = Search.newBuilder()
         .setText(Text.newBuilder()
-        .addPath(FieldPath.newBuilder().setPath("title"))
-        .addPath(FieldPath.newBuilder().setPath("foo"))
-        .addQuery("Future")
-        .setFuzzy(FuzzyOption.newBuilder().setMaxEdits(2).setPrefixLength(3)))
+            .addPath(FieldPath.newBuilder().setPath("title"))
+            .addPath(FieldPath.newBuilder().setPath("foo"))
+            .addQuery("Future")
+            .setFuzzy(FuzzyOption.newBuilder().setMaxEdits(2).setPrefixLength(3)))
         .build();
 ```
 
@@ -42,13 +41,13 @@ and the SortOrder enum is mapped to +/-1 to match the API
 ```java
     Search searchSort = Search.newBuilder()
         .setText(Text.newBuilder()
-        .addPath(FieldPath.newBuilder().setPath("title"))
-        .addPath(FieldPath.newBuilder().setPath("foo"))
-        .addQuery("Future"))
+            .addPath(FieldPath.newBuilder().setPath("title"))
+            .addPath(FieldPath.newBuilder().setPath("foo"))
+            .addQuery("Future"))
         .addSortBetaV1(SortField.newBuilder().setKey(FieldPath.newBuilder().setPath("title"))
-          .setValue(SortOrder.ASC))
+            .setValue(SortOrder.ASC))
         .addSortBetaV1(SortField.newBuilder().setKey(FieldPath.newBuilder().setPath("_id"))
-          .setValue(SortOrder.DESC))
+            .setValue(SortOrder.DESC))
         .build();
 ```
 
