@@ -1,0 +1,3 @@
+Benchmark              Mode  Cnt      Score   Error  Units
+LoggingBench.flogger  thrpt        7681.898          ops/s
+LoggingBench.slf4j    thrpt       10763.547          ops/s

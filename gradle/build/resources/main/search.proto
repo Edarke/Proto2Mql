@@ -1,0 +1,50 @@
+syntax = "proto2";
+
+package com.github.edarke.mongodb;
+
+import "operator.proto";
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.github.edarke.mongodb.driver";
+
+
+
+enum SortOrder {
+  ASC = 1 [(Options.bson_value) = "1"];
+  DESC = 2 [(Options.bson_value) = "-1"];
+}
+
+
+message Count {
+  enum Type {
+    LOWER_BOUND = 1;
+    TOTAL = 2;
+  }
+
+  optional Type type = 1;
+
+  optional int32 threshold = 2;
+}
+
+message SortField {
+  option (Options.map) = true;
+  required FieldPath key = 1;
+  required SortOrder value = 2;
+}
+
+
+message Search {
+  option (Options.nest) = "$search";
+  optional string index = 1;
+  optional Count count = 2;
+  optional bool return_stored_source = 4;
+  optional bool score_details = 5;
+
+  oneof operator {
+    Text text = 7;
+  }
+
+  repeated SortField sort_beta_v1 = 6 [(Options.map_field) = true];
+
+}
