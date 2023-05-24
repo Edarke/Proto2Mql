@@ -18,8 +18,8 @@ enum SortOrder {
 
 message Count {
   enum Type {
-    LOWER_BOUND = 1;
-    TOTAL = 2;
+    LOWER_BOUND = 1 [(Options.bson_value) = "lowerBound"];
+    TOTAL = 2 [(Options.bson_value) = "total"];
   }
 
   optional Type type = 1;

@@ -1,9 +1,12 @@
 package com.github.edarke.mongodb.driver;
 
 
+import com.github.edarke.mongodb.driver.Count.Type;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.search.FuzzySearchOptions;
+import com.mongodb.client.model.search.SearchCount;
 import com.mongodb.client.model.search.SearchOperator;
+import com.mongodb.client.model.search.SearchOptions;
 import com.mongodb.client.model.search.SearchPath;
 import com.mongodb.client.model.search.SearchScore;
 import com.mongodb.client.model.search.SearchScoreExpression;
@@ -38,7 +41,9 @@ public class Mongodb {
                         .addValues(FunctionScore.newBuilder().setConstant(1f))
                         .addValues(FunctionScore.newBuilder().setConstant(2f))
                     ))))
+        .setCount(Count.newBuilder().setType(Type.LOWER_BOUND).setThreshold(42).build())
         .build();
+
 
     Bson textSearch = Aggregates.search(
         SearchOperator.text(
@@ -47,7 +52,8 @@ public class Mongodb {
             .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3))
             .score(SearchScore.function(SearchScoreExpression.addExpression(
                 Arrays.asList(SearchScoreExpression.constantExpression(1f),
-                    SearchScoreExpression.constantExpression(2f))))));
+                    SearchScoreExpression.constantExpression(2f))))),
+        SearchOptions.searchOptions().count(SearchCount.lowerBound().threshold(42)));
 
     System.out.println(Proto2Bson.toBson(search));
     System.out.println(textSearch.toBsonDocument());

@@ -70,7 +70,7 @@ public class Proto2Bson {
           String extension = field.getOptions().getExtension(Options.bsonValue);
           return new BsonString(extension);
         }
-        return new BsonString(field.toString());
+        return new BsonString(field.getName());
     }
     throw new IllegalArgumentException();
   }

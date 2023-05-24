@@ -14,9 +14,6 @@ message AddExpression {
   repeated FunctionScore values = 1;
 }
 
-message ConstantExpression {
-  optional float value = 1;
-}
 
 message FunctionScore {
   oneof value {

@@ -11,11 +11,12 @@ POC of generating query builder code from protobuf schema
             .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3))
             .score(SearchScore.function(SearchScoreExpression.addExpression(
                 Arrays.asList(SearchScoreExpression.constantExpression(1f),
-                    SearchScoreExpression.constantExpression(2f))))));
+                    SearchScoreExpression.constantExpression(2f))))),
+        SearchOptions.searchOptions().count(SearchCount.lowerBound().threshold(42)));
 ```
 
 ```javascript
-{"$search": {"text": {"query": "Future", "path": ["title", "foo"], "fuzzy": {"maxEdits": 2, "prefixLength": 3}, "score": {"function": {"add": [{"constant": 1.0}, {"constant": 2.0}]}}}}}
+{"$search": {"text": {"query": "Future", "path": ["title", "foo"], "fuzzy": {"maxEdits": 2, "prefixLength": 3}, "score": {"function": {"add": [{"constant": 1.0}, {"constant": 2.0}]}}}, "count": {"type": "lowerBound", "threshold": 42}}}
 ```
 
 
@@ -33,11 +34,12 @@ POC of generating query builder code from protobuf schema
                         .addValues(FunctionScore.newBuilder().setConstant(1f))
                         .addValues(FunctionScore.newBuilder().setConstant(2f))
                     ))))
+        .setCount(Count.newBuilder().setType(Type.LOWER_BOUND).setThreshold(42).build())
         .build();
 ```
 
 ```javascript
-{"$search": {"text": {"query": ["Future"], "path": ["title", "foo"], "fuzzy": {"maxEdits": 2, "prefixLength": 3}, "score": {"function": {"add": [{"constant": 1.0}, {"constant": 2.0}]}}}}}
+{"$search": {"count": {"type": "lowerBound", "threshold": 42}, "text": {"query": ["Future"], "path": ["title", "foo"], "fuzzy": {"maxEdits": 2, "prefixLength": 3}, "score": {"function": {"add": [{"constant": 1.0}, {"constant": 2.0}]}}}}}
 ```
 
 
