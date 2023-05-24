@@ -89,7 +89,7 @@ public class Proto2Bson {
     } else {
       nested = root;
     }
-    msg.getAllFields().forEach((d, v) -> nested.put(d.getName(), toBson( d, msg)));
+    msg.getAllFields().forEach((d, v) -> nested.put(d.getJsonName(), toBson( d, msg)));
     return root;
   }
 }

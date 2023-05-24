@@ -5,6 +5,8 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.search.FuzzySearchOptions;
 import com.mongodb.client.model.search.SearchOperator;
 import com.mongodb.client.model.search.SearchPath;
+import com.mongodb.client.model.search.SearchScore;
+import com.mongodb.client.model.search.SearchScoreExpression;
 import java.util.Arrays;
 import java.util.List;
 import org.bson.conversions.Bson;
@@ -29,14 +31,23 @@ public class Mongodb {
             .addPath(FieldPath.newBuilder().setPath("title"))
             .addPath(FieldPath.newBuilder().setPath("foo"))
             .addQuery("Future")
-            .setFuzzy(FuzzyOption.newBuilder().setMaxEdits(2).setPrefixLength(3)))
+            .setFuzzy(FuzzyOption.newBuilder().setMaxEdits(2).setPrefixLength(3))
+            .setScore(Score.newBuilder()
+                .setFunction(FunctionScore.newBuilder()
+                    .setAdd(AddExpression.newBuilder()
+                        .addValues(FunctionScore.newBuilder().setConstant(1f))
+                        .addValues(FunctionScore.newBuilder().setConstant(2f))
+                    ))))
         .build();
 
     Bson textSearch = Aggregates.search(
         SearchOperator.text(
                 Arrays.asList(SearchPath.fieldPath("title"), SearchPath.fieldPath("foo")),
                 List.of("Future"))
-            .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3)));
+            .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3))
+            .score(SearchScore.function(SearchScoreExpression.addExpression(
+                Arrays.asList(SearchScoreExpression.constantExpression(1f),
+                    SearchScoreExpression.constantExpression(2f))))));
 
     System.out.println(Proto2Bson.toBson(search));
     System.out.println(textSearch.toBsonDocument());

@@ -8,19 +8,21 @@ import "common.proto";
 option java_multiple_files = true;
 option java_package = "com.github.edarke.mongodb.driver";
 
+
 message AddExpression {
-  repeated Expression values = 1;
+  option (Options.wrapper) =true;
+  repeated FunctionScore values = 1;
 }
 
-message Expression {
-  oneof value {
-    AddExpression add = 1;
-  }
+message ConstantExpression {
+  optional float value = 1;
 }
 
 message FunctionScore {
-  required Expression expression = 1;
-}
+  oneof value {
+    AddExpression add = 1;
+    float constant = 2;
+  }}
 
 message FuzzyOption {
   optional int32 max_edits = 1;
@@ -41,6 +43,13 @@ message Text {
   repeated string query = 1;
   repeated FieldPath path = 2;
   optional FuzzyOption fuzzy = 3;
+  optional Score score = 4;
+}
+
+message Phrase {
+  repeated string query = 1;
+  repeated FieldPath path = 2;
+  optional int32 slop = 3;
   optional Score score = 4;
 }
 

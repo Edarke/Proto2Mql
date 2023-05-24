@@ -8,11 +8,14 @@ POC of generating query builder code from protobuf schema
         SearchOperator.text(
                 Arrays.asList(SearchPath.fieldPath("title"), SearchPath.fieldPath("foo")),
                 List.of("Future"))
-            .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3)));
+            .fuzzy(FuzzySearchOptions.fuzzySearchOptions().maxEdits(2).prefixLength(3))
+            .score(SearchScore.function(SearchScoreExpression.addExpression(
+                Arrays.asList(SearchScoreExpression.constantExpression(1f),
+                    SearchScoreExpression.constantExpression(2f))))));
 ```
 
 ```javascript
-{"$search": {"text": {"query": "Future", "path": ["title", "foo"], "fuzzy": {"maxEdits": 2, "prefixLength": 3}}}}
+{"$search": {"text": {"query": "Future", "path": ["title", "foo"], "fuzzy": {"maxEdits": 2, "prefixLength": 3}, "score": {"function": {"add": [{"constant": 1.0}, {"constant": 2.0}]}}}}}
 ```
 
 
@@ -23,12 +26,18 @@ POC of generating query builder code from protobuf schema
             .addPath(FieldPath.newBuilder().setPath("title"))
             .addPath(FieldPath.newBuilder().setPath("foo"))
             .addQuery("Future")
-            .setFuzzy(FuzzyOption.newBuilder().setMaxEdits(2).setPrefixLength(3)))
+            .setFuzzy(FuzzyOption.newBuilder().setMaxEdits(2).setPrefixLength(3))
+            .setScore(Score.newBuilder()
+                .setFunction(FunctionScore.newBuilder()
+                    .setAdd(AddExpression.newBuilder()
+                        .addValues(FunctionScore.newBuilder().setConstant(1f))
+                        .addValues(FunctionScore.newBuilder().setConstant(2f))
+                    ))))
         .build();
 ```
 
 ```javascript
-{"$search": {"text": {"query": ["Future"], "path": ["title", "foo"], "fuzzy": {"max_edits": 2, "prefix_length": 3}}}}
+{"$search": {"text": {"query": ["Future"], "path": ["title", "foo"], "fuzzy": {"maxEdits": 2, "prefixLength": 3}, "score": {"function": {"add": [{"constant": 1.0}, {"constant": 2.0}]}}}}}
 ```
 
 
@@ -52,5 +61,5 @@ and the SortOrder enum is mapped to +/-1 to match the API
 ```
 
 ```javascript
-{"$search": {"sort_beta_v1": {"title": "1", "_id": "-1"}, "text": {"query": ["Future"], "path": ["title", "foo"]}}}
+{"$search": {"sortBetaV1": {"title": "1", "_id": "-1"}, "text": {"query": ["Future"], "path": ["title", "foo"]}}}
 ```
