@@ -1,2 +1,0 @@
-JMH S 18 bench.LoggingBench S 48 bench.jmh_generated.LoggingBench_flogger_jmhTest S 7 flogger S 10 Throughput E A 1 1 1 E E E E E E E I 1 1 I 1 2 E E E E E E E E 
-JMH S 18 bench.LoggingBench S 46 bench.jmh_generated.LoggingBench_slf4j_jmhTest S 5 slf4j S 10 Throughput E A 1 1 1 E E E E E E E I 1 1 I 1 2 E E E E E E E E 
